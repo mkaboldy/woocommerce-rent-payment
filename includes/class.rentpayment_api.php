@@ -222,7 +222,7 @@ class rentpayment_CC_params {
         'visa'          => 'Visa',
         'mastercard'    => 'MasterCard',
         'discover'      => 'Discover',
-        'amex'          => 'Amex'
+        'amex'          => 'AmEx'
         );
     /**
      * Translate the card type to an API acceptable card type name
