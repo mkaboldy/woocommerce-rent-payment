@@ -7,6 +7,7 @@ class RentPayment_API {
     private $api_username;
     private $api_password;
     private $property_code;
+    private $enable_logging = false;
 
     /**
      * Constructor, init private vars
@@ -15,11 +16,12 @@ class RentPayment_API {
      * @param mixed $api_password
      * @param mixed $property_code
      */
-    public function __construct($api_url='',$api_username='',$api_password='',$property_code='') {
+    public function __construct($api_url='',$api_username='',$api_password='',$property_code='',$enable_logging = false) {
         $this->api_url = $api_url;
         $this->api_username = $api_username;
         $this->api_password = $api_password;
         $this->property_code = $property_code;
+        $this->enable_logging = $enable_logging;
     }
 
 	/**
@@ -118,9 +120,16 @@ class RentPayment_API {
      * @param mixed $what
      */
     private function log($type,$what) {
+        if ($this->enable_logging){
+            $logger = wc_get_logger();
+            $logger->info($what,array( 'source' => 'rentpayment-api' ));
+        }
+
+        /* legacy logging before WC
 		file_put_contents(dirname(WC_RENTPAYMENT_MAIN_FILE).'/logs/rent-payment/'.$type.'-'.date('Y-m-d h.i.s').'.log',
 			print_r($what, true) . "\n",
 			FILE_APPEND | LOCK_EX);
+        */
     }
 }
 

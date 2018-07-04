@@ -8,6 +8,7 @@ class WC_Rent_Payment_Gateway extends WC_Payment_Gateway_CC {
     private $api_username;
     private $api_password;
     private $property_code;
+    private $enable_api_logging;
 
     // option key constants
     const OPTION_SANDBOX = 'sandbox';
@@ -15,6 +16,7 @@ class WC_Rent_Payment_Gateway extends WC_Payment_Gateway_CC {
     const OPTION_API_USERNAME = 'api_username';
     const OPTION_API_PASSWORD = 'api_password';
     const OPTION_PROPERTY_CODE = 'property_code';
+    const OPTION_API_LOGGING = 'enable_api_logging';
 
     // meta keys
     const ORDER_META_RENTPAYMENT_TOKEN = 'rentpayment_token';
@@ -40,6 +42,8 @@ class WC_Rent_Payment_Gateway extends WC_Payment_Gateway_CC {
         // Define user set variables for private vars
 
         $this->sandbox  = $this->get_option( self::OPTION_SANDBOX );
+        $this->enable_api_logging = $this->get_option( self::OPTION_API_LOGGING );
+
         if ($this->sandbox == 'yes') {
             $this->api_url = 'https://demo.rentpayment.com/api/1';
             $this->api_username = 'actioncorporatemgr';
@@ -123,6 +127,14 @@ class WC_Rent_Payment_Gateway extends WC_Payment_Gateway_CC {
                 'default'     => __( 'Please remit payment to Store Name upon pickup or delivery.', 'wc-rent-payment' ),
                 'desc_tip'    => true,
             ),
+
+            self::OPTION_API_LOGGING => array(
+                'title'       => __( 'Enable API logging', 'wc-rent-payment' ),
+                'type'        => 'checkbox',
+                'label' => __( 'Allow logging of API traffic (request and response) for troubleshooting.', 'wc-rent-payment' ),
+                'default'     => 'no',
+                'desc_tip'    => true,
+            ),
         ));
     }
     /**
@@ -138,7 +150,7 @@ class WC_Rent_Payment_Gateway extends WC_Payment_Gateway_CC {
 
             // connect API to process CC
 
-            $Rentpayment_API = new RentPayment_API($this->api_url,$this->api_username,$this->api_password,$this->property_code);
+            $Rentpayment_API = new RentPayment_API($this->api_url,$this->api_username,$this->api_password,$this->property_code, $this->enable_api_logging);
 
             $CC_params = new rentpayment_CC_params();
 
@@ -146,7 +158,10 @@ class WC_Rent_Payment_Gateway extends WC_Payment_Gateway_CC {
             $cardtype = $CC_params->get_cardtype_name($_POST[$this->id.'-card-type']);
 
             if (false == $cardtype) {
-                throw new Exception(__('Credit card cannot be accepted. Please use Visa, Mastercard, Amex or Discover.','wc-rent-payment'));
+
+                $errorMessage = __('Credit card cannot be accepted. Please use Visa, Mastercard, Amex or Discover.','wc-rent-payment');
+
+                throw new Exception($errorMessage);
             }
 
             $CC_params->number = str_replace(' ', '', $_POST[$this->id.'-card-number']); // cc number sanitized
@@ -185,8 +200,14 @@ class WC_Rent_Payment_Gateway extends WC_Payment_Gateway_CC {
             );
 
         } catch(Exception $e) {
+
             $errorMessage = $e->getMessage();
+
             wc_add_notice( $errorMessage, 'error' );
+
+            $logger = wc_get_logger();
+            $logger->debug("Customer of order $order_id was presented this message: $errorMessage");
+
             $return = array(
                 'result'    => 'failure',
                 'messages'  => $errorMessage,
