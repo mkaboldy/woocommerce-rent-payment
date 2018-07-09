@@ -3,18 +3,19 @@
 Plugin Name: WooCommerce Rent Payment Gateway
 Plugin URI: https://github.com/mkaboldy/woocommerce-rent-payment
 Description: Adds Rent Payment to WooCommerce payment methods
-Version: 0.4
+Version: 0.5
 Author: Miklos Kaboldy
+WC tested up to: 3.4
+Text Domain: wc-rent-payment
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-define( 'WC_RENTPAYMENT_PLUGIN_VERSION','0.3');
-define( 'WC_RENTPAYMENT_PLUGIN_PATH' , plugin_dir_path( basename( plugin_dir_path( __FILE__ ) ) , basename( __FILE__ ) ) );
-define( 'WC_RENTPAYMENT_PLUGIN_URL' , untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ) , basename( __FILE__ ) ) ) );
-define( 'WC_RENTPAYMENT_MAIN_FILE' , __FILE__ );
+define( 'WC_RENTPAYMENT_PLUGIN_VERSION','0.5');
+define( 'WC_RENTPAYMENT_PLUGIN_PATH' , dirname( __FILE__ ));
+define( 'WC_RENTPAYMENT_PLUGIN_URL' , plugins_url('', __FILE__ ));
 
 
 // Make sure WooCommerce is active
@@ -42,7 +43,7 @@ add_filter( 'woocommerce_payment_gateways', 'wc_rent_payment_add_to_gateways' );
  */
 function wc_rent_payment_gateway_plugin_links( $links ) {
 	$plugin_links = array(
-		'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=rentpayment' ) . '">' . __( 'Configure', 'wc-rent-payment' ) . '</a>'
+		'<a href="' . admin_url( 'admin.php?page=wc-settings&tab=checkout&section=rentpayment' ) . '">' . __( 'Configure', WC_Rent_Payment_Gateway::TEXTDOMAIN ) . '</a>'
 	);
 	return array_merge( $plugin_links, $links );
 }

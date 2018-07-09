@@ -77,13 +77,6 @@ class RentPayment_API {
 
         self::log(__FUNCTION__,$requestdata);
 
-        // mask CC before logging
-
-        $logrequest = json_decode(json_encode(simplexml_load_string($requestdata)),TRUE);
-        $logrequest['number'] = 'XXXX-XXXX-XXXX-'.substr($logrequest['number'],-4);
-
-        // self::log(__FUNCTION__,$logrequest);
-
 		$curl_request = curl_init($this->api_url);
 
 		curl_setopt($curl_request, CURLOPT_POST, 1);

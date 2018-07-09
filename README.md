@@ -7,14 +7,28 @@ Wordpress plugin to extend WooCommerce with 'Rent Payment' payment method
 3. Configure the plugin settings in WP-Admin/WooCommerce/Settings/Payments/Rent Payment
 
 ## Troubleshooting
-In plugin settings enable API logging. This will record the raw XML requests and responses and will allow you to troubleshoot API connectivity problems. 
+In plugin settings enable API logging. This will record the raw XML requests and responses and will to allow troubleshooting API connectivity problems. 
 
 Don't use this in a production environment as it will store CC information locally.
 
-## Vesion history
+## Version history
 
-### 0.4 error management and logging improved
-### 0.3 bugfixes
-### 0.2 basic functionality ready
-### 0.1 minor fixes
-### 0.0 initial version
+### 0.5
+- i18n
+- order status hook
+- admin payment
+
+### 0.4 
+- error management and logging improved
+
+### 0.3 
+- bugfixes
+
+### 0.2 
+- basic functionality ready
+
+### 0.1 
+- minor fixes
+
+### 0.0 
+- initial version

@@ -1,0 +1,19 @@
+#wc-rent-payment .field-container:not(:last-of-type) {
+    margin-bottom: 10px;
+}
+#wc-rent-payment label {
+    display: block;
+    margin-bottom: 3px;
+    padding-left: 2px;
+    color: #777;
+}
+
+#wc-rent-payment #charge-notice {
+    box-shadow: none;
+    margin: 5px 0 15px;
+    border-left-width: 4px;
+    border-left-style: solid;
+    padding: 1px 12px;
+}
+
+#charge-token-spinner, #charge-cc-spinner {height:30px;}
