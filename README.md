@@ -13,6 +13,10 @@ Don't use this in a production environment as it will store CC information local
 
 ## Version history
 
+### 0.6
+
+- fix to prevent crash after failed WC upgrade
+
 ### 0.5
 - i18n
 - order status hook
