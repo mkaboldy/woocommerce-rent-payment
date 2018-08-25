@@ -13,8 +13,10 @@ Don't use this in a production environment as it will store CC information local
 
 ## Version history
 
-### 0.6
+### 0.7 
+ - Added notice to the order emails if the card was not charged in sandbox mode
 
+### 0.6
 - fix to prevent crash after failed WC upgrade
 
 ### 0.5

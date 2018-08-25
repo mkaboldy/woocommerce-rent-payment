@@ -15,6 +15,9 @@ if (class_exists('WC_Payment_Gateway_CC')) {
 
         const TEXTDOMAIN = 'wc-rent-payment';
 
+        const METHOD_TITLE =  'Rent Payment';
+        const METHOD_TITLE_SANDBOX = 'Rent Payment - sandbox';
+
         // option key constants
         const OPTION_SANDBOX = 'sandbox';
         const OPTION_API_URL = 'api_url';
@@ -41,7 +44,7 @@ if (class_exists('WC_Payment_Gateway_CC')) {
             $this->id = 'rentpayment';
             $this->icon = apply_filters('woocommerce_rentpayment_icon', '');
             $this->has_fields = true;
-            $this->method_title = __('Rent Payment',self::TEXTDOMAIN);
+            $this->method_title = self::METHOD_TITLE;
             $this->method_description = __('Process credit card payments via rentpayment.com',self::TEXTDOMAIN);
 
             $this->init_form_fields();
@@ -62,8 +65,8 @@ if (class_exists('WC_Payment_Gateway_CC')) {
                 $this->api_password = 'aww2aygc';
                 $this->property_code = 'JMZG88AI67';
 
-                $this->method_title     .= ' - ' . __('sandbox mode',self::TEXTDOMAIN);
-                $this->title            .= ' - ' . __('sandbox mode',self::TEXTDOMAIN);
+                $this->method_title     = self::METHOD_TITLE_SANDBOX;
+                $this->title            = self::METHOD_TITLE_SANDBOX;
             } else {
                 $this->api_url = $this->get_option(self::OPTION_API_URL);
                 $this->api_username = $this->get_option(self::OPTION_API_USERNAME);
@@ -75,6 +78,10 @@ if (class_exists('WC_Payment_Gateway_CC')) {
             add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
             add_action( 'woocommerce_credit_card_form_fields', array($this,'credit_card_form_fields'),10,2);
             add_action( self::ACTION_PROCESS_SUCCESS_API_RESPONSE, array($this,'process_success_api_response'), 10,2);
+
+            if (!has_action('woocommerce_email_after_order_table', array(__CLASS__, 'email_after_order_table') )) {
+                add_action( 'woocommerce_email_after_order_table', array(__CLASS__, 'email_after_order_table'), 10, 4);
+            }
 
             add_action( 'wp_ajax_'.self::AJAX_CHARGE, [$this,'ajax_charge'] );
 
@@ -266,8 +273,28 @@ if (class_exists('WC_Payment_Gateway_CC')) {
 
             // Remove cart
             WC()->cart->empty_cart();
+        }
+        /**
+         * Adds a notice to the order emails if the card was not charged in sandbox mode.
+         * @hook woocommerce_email_after_order_table
+         * @param WC_Order $order
+         * @param bool $sent_to_admin
+         * @param bool $plain_text
+         * @param string $email
+         */
+        public static function email_after_order_table(WC_Order $order, $sent_to_admin, $plain_text, $email ) {
 
+            $payment_method_title = $order->get_payment_method_title();
 
+            if (self::METHOD_TITLE_SANDBOX == $payment_method_title) {
+                $params = array(
+                    'order' => $order,
+                    'sent_to_admin' => $sent_to_admin,
+                    'plain_text' => $plain_text,
+                    'email' => $email,
+                    );
+                wc_get_template( 'emails/rentpayment_processed_in_sandbox.php', $params,'', WC_RENTPAYMENT_PLUGIN_PATH . '/templates/' );
+            }
         }
 	    /**
          * Get gateway icon.
@@ -290,7 +317,7 @@ if (class_exists('WC_Payment_Gateway_CC')) {
         public function payment_fields(){
             if ($this->sandbox) {
 ?>
-        <p>In sandbox mode you can use test CC numbers listed <a href="https://www.paypalobjects.com/en_AU/vhelp/paypalmanager_help/credit_card_numbers.htm" target="_blank">here</a>.</p>
+        <p>In sandbox mode you can generate test CC numbers <a href="https://ccardgenerator.com/generate-mastercard-card-numbers.php" target="_blank">here</a>.</p>
 
     <?php             
             }
