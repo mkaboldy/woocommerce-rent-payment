@@ -32,6 +32,7 @@ if (class_exists('WC_Payment_Gateway_CC')) {
         // action and filter keys
         const ACTION_PROCESS_SUCCESS_API_RESPONSE = 'wcrp/process_success_api_response';
         const FILTER_PAYMENT_SUCCESS_ORDER_STATUS = 'wrcp/payment_success_order_status';
+        const FILTER_PAYMENT_SUCCESS_ORDER_STATUS_MSG = 'wrcp/payment_success_order_status_msg';
 
         // nonce key
         const KEY_NONCE_CHARGE = 'rentpayment-charge';
@@ -265,8 +266,10 @@ if (class_exists('WC_Payment_Gateway_CC')) {
             }
 
             // set appropriate status
+            $new_status = apply_filters(self::FILTER_PAYMENT_SUCCESS_ORDER_STATUS,'completed');
+            $new_status_msg = apply_filters(self::FILTER_PAYMENT_SUCCESS_ORDER_STATUS_MSG, __( 'Payment completed', self::TEXTDOMAIN ));
 
-            $order->update_status(apply_filters(self::FILTER_PAYMENT_SUCCESS_ORDER_STATUS,'completed'), __( 'Payment completed', self::TEXTDOMAIN ) );
+            $order->update_status($new_status, $new_status_msg );
 
             // Reduce stock levels
             wc_reduce_stock_levels($order);

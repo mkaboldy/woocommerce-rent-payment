@@ -3,9 +3,9 @@
 Plugin Name: WooCommerce Rent Payment Gateway
 Plugin URI: https://github.com/mkaboldy/woocommerce-rent-payment
 Description: Adds Rent Payment to WooCommerce payment methods
-Version: 0.7
+Version: 0.8
 Author: Miklos Kaboldy
-WC tested up to: 3.4.4
+WC tested up to: 3.4.5
 Text Domain: wc-rent-payment
  */
 
@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define( 'WC_RENTPAYMENT_PLUGIN_VERSION','0.7');
+define( 'WC_RENTPAYMENT_PLUGIN_VERSION','0.8');
 define( 'WC_RENTPAYMENT_PLUGIN_PATH' , dirname( __FILE__ ));
 define( 'WC_RENTPAYMENT_PLUGIN_URL' , plugins_url('', __FILE__ ));
 
