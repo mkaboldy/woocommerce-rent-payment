@@ -265,9 +265,9 @@ if (class_exists('WC_Payment_Gateway_CC')) {
                 $order->save_meta_data();
             }
 
-            // set appropriate status
-            $new_status = apply_filters(self::FILTER_PAYMENT_SUCCESS_ORDER_STATUS,'completed');
-            $new_status_msg = apply_filters(self::FILTER_PAYMENT_SUCCESS_ORDER_STATUS_MSG, __( 'Payment completed', self::TEXTDOMAIN ));
+            // allow setting appropriate status and msg
+            $new_status = apply_filters(self::FILTER_PAYMENT_SUCCESS_ORDER_STATUS,'completed',$order);
+            $new_status_msg = apply_filters(self::FILTER_PAYMENT_SUCCESS_ORDER_STATUS_MSG, __( 'Payment completed', self::TEXTDOMAIN ),$order);
 
             $order->update_status($new_status, $new_status_msg );
 
